@@ -75,6 +75,8 @@ public class NetworkStuff {
 
     public static Version latestVersion;
 
+    private static boolean uploadPermission = false;
+
     //limits
     private static final RefilledNumber
             uploadRate = new RefilledNumber(),
@@ -291,6 +293,8 @@ public class NetworkStuff {
 
             JsonObject limits = json.getAsJsonObject("limits");
             maxAvatarSize = limits.get("maxAvatarSize").getAsInt();
+            JsonElement canUpload = limits.get("canUpload"); // default false
+            uploadPermission = canUpload != null && canUpload.getAsBoolean();
         });
     }
 
@@ -538,7 +542,7 @@ public class NetworkStuff {
     }
 
     public static boolean canUpload() {
-        return isConnected() && uploadRate.check();
+        return isConnected() && uploadPermission && uploadRate.check();
     }
 
     public static int getSizeLimit() {
