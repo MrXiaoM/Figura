@@ -9,6 +9,11 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+    runs {
+        client {
+            programArgs '--username', 'MrXiaoM'
+        }
+    }
 }
 
 configurations {
