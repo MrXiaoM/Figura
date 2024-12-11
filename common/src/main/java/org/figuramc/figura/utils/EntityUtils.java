@@ -90,7 +90,7 @@ public class EntityUtils {
     }
 
     public static boolean checkInvalidPlayer(UUID id) {
-        if (id.version() != 4)
+        if (id.version() < 3)
             return true;
 
         PlayerInfo playerInfo = getPlayerInfo(id);
