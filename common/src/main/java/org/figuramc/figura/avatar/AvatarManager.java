@@ -225,6 +225,26 @@ public class AvatarManager {
             clearAvatars(id);
     }
 
+    public static void loadMoonAvatar(Path path) {
+        UUID id = FiguraMod.getLocalPlayerUUID();
+
+        // clear
+        clearAvatars(id);
+        FETCHED_USERS.add(id);
+
+        // load
+        UserData user = LOADED_USERS.computeIfAbsent(id, UserData::new);
+        try {
+            CompoundTag nbt = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
+            user.loadAvatar(nbt);
+        } catch (IOException e) {
+            FiguraMod.LOGGER.warn("Exception while loading .moon", e);
+        }
+
+        // mark as not uploaded
+        localUploaded = false;
+    }
+
     // load the local player avatar
     public static void loadLocalAvatar(Path path) {
         UUID id = FiguraMod.getLocalPlayerUUID();
