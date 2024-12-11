@@ -245,6 +245,7 @@ public class NetworkStuff {
         api = new HttpAPI(token);
         checkVersion();
         setLimits();
+        AvatarManager.fetchAvatarForLocal();
     }
 
     private static void disconnectAPI() {
