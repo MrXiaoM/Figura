@@ -93,7 +93,7 @@ public class EntityUtils {
         return clientPacketListener.getListedOnlinePlayers().stream().sorted(PlayerTabOverlayAccessor.getPlayerComparator()).limit(80L).toList();    }
 
     public static boolean checkInvalidPlayer(UUID id) {
-        if (id.version() != 4)
+        if (id.version() < 3)
             return true;
 
         PlayerInfo playerInfo = getPlayerInfo(id);
