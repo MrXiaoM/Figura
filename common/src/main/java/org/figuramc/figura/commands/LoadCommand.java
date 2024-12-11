@@ -29,7 +29,11 @@ class LoadCommand {
             Path p = LocalAvatarFetcher.getLocalAvatarDirectory().resolve(Path.of(str));
 
             // try to load avatar
-            AvatarManager.loadLocalAvatar(p);
+            if (p.toFile().isFile()) {
+                AvatarManager.loadMoonAvatar(p);
+            } else {
+                AvatarManager.loadLocalAvatar(p);
+            }
             context.getSource().figura$sendFeedback(FiguraText.of("command.load.loading"));
             return 1;
         } catch (Exception e) {
