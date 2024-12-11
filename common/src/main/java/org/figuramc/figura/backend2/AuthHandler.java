@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.util.EntityUtils;
 import org.figuramc.figura.FiguraMod;
+import org.figuramc.figura.avatar.AvatarManager;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +21,10 @@ public class AuthHandler {
 
     public static void auth(boolean reAuth) {
         NetworkStuff.async(() -> {
-            if (!reAuth && NetworkStuff.isConnected())
+            if (!reAuth && NetworkStuff.isConnected()) {
+                AvatarManager.fetchAvatarForLocal();
                 return;
+            }
 
             FiguraMod.LOGGER.info("Authenticating with " + FiguraMod.MOD_NAME + " server...");
             NetworkStuff.backendStatus = 2;
@@ -32,7 +35,7 @@ public class AuthHandler {
                 String username = user.getName();
                 String serverID = getServerID(username);
                 FiguraMod.debug("Joining \"{}\" on server \"{}\"", username, serverID);
-                minecraft.getMinecraftSessionService().joinServer(user.getGameProfile(), user.getAccessToken(), serverID);
+                // minecraft.getMinecraftSessionService().joinServer(user.getProfileId(), user.getAccessToken(), serverID);
                 NetworkStuff.authSuccess(getToken(serverID));
             // cringe exceptions
             } catch (AuthenticationUnavailableException e) {
