@@ -163,8 +163,8 @@ public class NetworkStuff {
     }
 
     private static boolean checkUUID(UUID id) {
-        if (id.version() != 4) {
-            FiguraMod.debug("Voiding request for non v4 UUID \"" + id + "\" (v" + id.version() + ")");
+        if (id.version() < 3) {
+            FiguraMod.debug("Voiding request for non v3 UUID \"" + id + "\" (v" + id.version() + ")");
             return true;
         }
         return false;
@@ -208,6 +208,7 @@ public class NetworkStuff {
         backendStatus = 2;
         connectAPI(token);
         connectWS(token);
+
     }
 
     private static void fetchMOTD() {
