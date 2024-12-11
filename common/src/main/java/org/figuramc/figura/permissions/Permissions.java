@@ -14,7 +14,7 @@ public class Permissions {
     // default permissions
     public static final Permissions
             INIT_INST = new Permissions("INIT_INST", 0, 524287, 0, 32768, 65536, 262144, Integer.MAX_VALUE),
-            WORLD_TICK_INST = new Permissions("WORLD_TICK_INST", 0, 32767, 0, 64, 128, 256, Integer.MAX_VALUE),
+            WORLD_TICK_INST = new Permissions("WORLD_TICK_INST", 0, 32767, 0, 1024, 4096, 8192, Integer.MAX_VALUE),
             TICK_INST = new Permissions("TICK_INST", 0, 65535, 0, 4096, 8192, 32768, Integer.MAX_VALUE),
             WORLD_RENDER_INST = new Permissions("WORLD_RENDER_INST", 0, 32767, 0, 32, 64, 256, Integer.MAX_VALUE),
             RENDER_INST = new Permissions("RENDER_INST", 0, 65535, 0, 4096, 8192, 32768, Integer.MAX_VALUE),
