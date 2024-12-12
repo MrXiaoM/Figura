@@ -41,6 +41,9 @@ public class FiguraModClientForge extends FiguraMod {
         ChannelBuilder.named(FiguraMod.resReconnect)
                 .eventNetworkChannel()
                 .addListener(e -> FiguraMod.reconnect());
+        ChannelBuilder.named(FiguraMod.resWardrobe)
+                .eventNetworkChannel()
+                .addListener(e -> FiguraMod.openWardrobe());
     }
 
     @SubscribeEvent
