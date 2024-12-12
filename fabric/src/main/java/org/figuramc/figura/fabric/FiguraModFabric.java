@@ -23,5 +23,6 @@ public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
         ResourceManagerHelper managerHelper = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
         getResourceListeners().forEach(figuraResourceListener -> managerHelper.registerReloadListener((FiguraResourceListenerImpl)figuraResourceListener));
         ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resReconnect, (client, handler, buf, response) -> FiguraMod.reconnect());
+        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resWardrobe, (client, handler, buf, response) -> FiguraMod.openWardrobe());
     }
 }

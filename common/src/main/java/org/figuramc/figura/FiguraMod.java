@@ -23,6 +23,7 @@ import org.figuramc.figura.config.ConfigManager;
 import org.figuramc.figura.config.Configs;
 import org.figuramc.figura.entries.EntryPointManager;
 import org.figuramc.figura.font.Emojis;
+import org.figuramc.figura.gui.screens.WardrobeScreen;
 import org.figuramc.figura.gui.widgets.lists.AvatarList;
 import org.figuramc.figura.lua.FiguraLuaPrinter;
 import org.figuramc.figura.lua.docs.FiguraDocsManager;
@@ -57,6 +58,7 @@ public class FiguraMod {
     public static boolean processingKeybind;
 
     public static final ResourceLocation resReconnect = new ResourceLocation("figura", "reconnect");
+    public static final ResourceLocation resWardrobe = new ResourceLocation("figura", "wardrobe");
 
     public static void reconnect() {
         AvatarManager.clearAvatars(FiguraMod.getLocalPlayerUUID());
@@ -66,6 +68,12 @@ public class FiguraMod {
         AvatarManager.localUploaded = true;
         AvatarList.selectedEntry = null;
         NetworkStuff.auth();
+    }
+
+    public static void openWardrobe() {
+        Minecraft client = Minecraft.getInstance();
+        if (client.level == null) return;
+        client.setScreen(new WardrobeScreen(client.screen));
     }
 
     /* For some reason, the mod menu entrypoint (or something) is able to call this before the Config
