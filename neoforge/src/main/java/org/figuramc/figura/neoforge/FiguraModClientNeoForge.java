@@ -14,6 +14,8 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -35,6 +37,13 @@ public class FiguraModClientNeoForge extends FiguraMod {
     public static void onInitializeClient(FMLClientSetupEvent event) {
         onClientInit();
         ModConfig.registerConfigScreen();
+    }
+
+    @SubscribeEvent
+    public static void register(final RegisterPayloadHandlerEvent event) {
+        final IPayloadRegistrar registrar = event.registrar(FiguraMod.resReconnect.getNamespace());
+        registrar.play(FiguraMod.resReconnect, ReconnectPayload::new, handler -> handler
+                .client((data, context) -> FiguraMod.reconnect()));
     }
 
     @SubscribeEvent

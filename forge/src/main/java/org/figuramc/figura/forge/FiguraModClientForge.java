@@ -7,6 +7,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.network.ChannelBuilder;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.config.ConfigManager;
 import org.figuramc.figura.config.forge.ModConfig;
@@ -24,6 +25,10 @@ public class FiguraModClientForge extends FiguraMod {
     public static void onInitializeClient(FMLClientSetupEvent event) {
         onClientInit();
         ModConfig.registerConfigScreen();
+        
+        ChannelBuilder.named(FiguraMod.resReconnect)
+                .eventNetworkChannel()
+                .addListener(e -> FiguraMod.reconnect());
     }
 
     @SubscribeEvent

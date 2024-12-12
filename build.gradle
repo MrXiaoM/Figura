@@ -12,6 +12,11 @@ subprojects {
 
 	loom {
 		silentMojangMappingsLicense()
+		runs {
+			client {
+				programArgs '--username', 'MrXiaoM'
+			}
+		}
 	}
 
 	repositories {
