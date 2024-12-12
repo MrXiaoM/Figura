@@ -12,4 +12,4 @@ include("common:mojmap")
 include("fabric")
 include("forge")
 
-rootProject.name = "Figura"
+rootProject.name = "FiguraLambda"
