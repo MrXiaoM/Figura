@@ -1,6 +1,7 @@
 package org.figuramc.figura.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
 import org.figuramc.figura.FiguraMod;
@@ -18,5 +19,6 @@ public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
         // register reload listener
         ResourceManagerHelper managerHelper = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
         getResourceListeners().forEach(figuraResourceListener -> managerHelper.registerReloadListener((FiguraResourceListenerImpl)figuraResourceListener));
+        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resReconnect, (client, handler, buf, response) -> FiguraMod.reconnect());
     }
 }
