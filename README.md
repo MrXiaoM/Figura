@@ -16,14 +16,14 @@
 + ~~修复一些问题~~
 + 玩家连接后端服务器后，下载自己的模型并应用，而不是使用本地最后使用的模型
 + 可以直接使用 `/figura load` 命令载入导出的 `.moon` 文件
-+ 提高 `world tick` 的各权限限制，以免部分模型因为无法加载脚本出现渲染问题
++ 提高 `world tick` 代码指令数的各权限限制，以免部分模型因为无法加载脚本出现渲染问题
 + 可让后端控制玩家不可上传模型
 + Minecraft 服务器可发送 CustomPayload 包，让 Figura 重新尝试连接后端服务器
 + 更多内容即将来临
 
 ## Figura Lambda 生态软件
 
-+ [FiguraLambda](https://github.com/MrXiaoM/FiguraLambda): 客户端Mod <-- `你在这里`
++ [FiguraLambda](https://github.com/MrXiaoM/FiguraLambda): 客户端Mod `<-- 你在这里`
 + [sculptor](https://github.com/MrXiaoM/sculptor): 第三方后端(fork)
 + [FiguraAuthProvider](https://github.com/MrXiaoM/FiguraAuthProvider): 服务端/代理端 玩家验证插件
 + FiguraModels: 服务端 模型管理插件 *开发中*
