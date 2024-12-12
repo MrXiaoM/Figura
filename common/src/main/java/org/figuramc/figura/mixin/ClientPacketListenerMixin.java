@@ -36,18 +36,4 @@ public abstract class ClientPacketListenerMixin {
         if (avatar != null && avatar.totemEvent())
             ci.cancel();
     }
-
-    @Inject(method = "handleUnknownCustomPayload", at = @At(value = "HEAD"), cancellable = true)
-    private void handleUnknownCustomPayload(CustomPacketPayload payload, CallbackInfo ci) {
-        if (payload.id().equals(FiguraMod.resReconnect)) {
-            ci.cancel();
-            AvatarManager.clearAvatars(FiguraMod.getLocalPlayerUUID());
-            try {
-                LocalAvatarLoader.loadAvatar(null, null);
-            } catch (Exception ignored) {}
-            AvatarManager.localUploaded = true;
-            AvatarList.selectedEntry = null;
-            NetworkStuff.auth();
-        }
-    }
 }
