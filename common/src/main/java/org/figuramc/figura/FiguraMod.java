@@ -23,6 +23,7 @@ import org.figuramc.figura.config.ConfigManager;
 import org.figuramc.figura.config.Configs;
 import org.figuramc.figura.entries.EntryPointManager;
 import org.figuramc.figura.font.Emojis;
+import org.figuramc.figura.gui.widgets.lists.AvatarList;
 import org.figuramc.figura.lua.FiguraLuaPrinter;
 import org.figuramc.figura.lua.docs.FiguraDocsManager;
 import org.figuramc.figura.mixin.SkullBlockEntityAccessor;
@@ -56,6 +57,16 @@ public class FiguraMod {
     public static boolean processingKeybind;
 
     public static final ResourceLocation resReconnect = new ResourceLocation("figura", "reconnect");
+
+    public static void reconnect() {
+        AvatarManager.clearAvatars(FiguraMod.getLocalPlayerUUID());
+        try {
+            LocalAvatarLoader.loadAvatar(null, null);
+        } catch (Exception ignored) {}
+        AvatarManager.localUploaded = true;
+        AvatarList.selectedEntry = null;
+        NetworkStuff.auth();
+    }
 
     /* For some reason, the mod menu entrypoint (or something) is able to call this before the Config
     class can initialize, meaning Configs.DEBUG_MODE can be null when this is called.... Weird */

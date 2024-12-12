@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.network.ChannelBuilder;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -38,6 +39,10 @@ public class FiguraModClientForge extends FiguraMod {
         onClientInit();
         ModConfig.registerConfigScreen();
         vanillaOverlays.addAll(Arrays.asList(RenderGameOverlayEvent.ElementType.values()));
+
+        ChannelBuilder.named(FiguraMod.resReconnect)
+                .eventNetworkChannel()
+                .addListener(e -> FiguraMod.reconnect());
     }
 
 
