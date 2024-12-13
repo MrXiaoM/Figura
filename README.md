@@ -27,4 +27,4 @@
 + [FiguraLambda](https://github.com/MrXiaoM/FiguraLambda): 客户端Mod `<-- 你在这里`
 + [sculptor](https://github.com/MrXiaoM/sculptor): 第三方后端(fork)
 + [FiguraAuthProvider](https://github.com/MrXiaoM/FiguraAuthProvider): 服务端/代理端 玩家验证插件
-+ FiguraModels: 服务端 模型管理插件 *开发中*
++ [FiguraAvatars](https://github.com/MrXiaoM/FiguraAvatars): 服务端 模型管理插件
