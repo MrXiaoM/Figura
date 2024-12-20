@@ -190,7 +190,7 @@ public class SoundAPI {
         try {
             WeighedSoundEvents events = Minecraft.getInstance().getSoundManager().getSoundEvent(new ResourceLocation(id));
             if (events != null) {
-                Sound sound = events.getSound(RandomSource.create(WorldAPI.getCurrentWorld().random.nextLong()));
+                Sound sound = events.getSound(RandomSource.createThreadSafe());
                 if (sound != SoundManager.EMPTY_SOUND) {
                     owner.noPermissions.remove(Permissions.CUSTOM_SOUNDS);
                     return new LuaSound(sound, id, events.getSubtitle(), owner);

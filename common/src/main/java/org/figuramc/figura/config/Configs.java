@@ -136,7 +136,7 @@ public class Configs {
                 String tooltip = "config.render_debug_parts_pivot.tooltip";
                 this.tooltip = FiguraText.of(tooltip,
                         FiguraText.of(tooltip + ".cubes").setStyle(ColorUtils.Colors.AWESOME_BLUE.style),
-                        FiguraText.of(tooltip + ".groups").setStyle(ColorUtils.Colors.BLUE.style));
+                        FiguraText.of(tooltip + ".groups").setStyle(ColorUtils.Colors.FIGURA_BLUE.style));
             }};
     public static final ConfigType.BoolConfig
             ALLOW_FP_HANDS = new ConfigType.BoolConfig("allow_fp_hands", RENDERING, false),

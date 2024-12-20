@@ -13,9 +13,9 @@ public class ColorUtils {
     public enum Colors {
         AWESOME_BLUE(0x5EA5FF),
         PURPLE(0xA672EF),
-        BLUE(0x00F0FF),
+        FIGURA_BLUE(0x00F0FF),
         SOFT_BLUE(0x99BBEE),
-        RED(0xFF2400),
+        FIGURA_RED(0xFF2400),
         ORANGE(0xFFC400),
 
         CHEESE(0xF8C53A),

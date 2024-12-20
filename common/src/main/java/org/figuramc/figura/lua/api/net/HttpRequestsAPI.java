@@ -287,7 +287,7 @@ public class HttpRequestsAPI {
             var asyncResponse = parent.httpClient.sendAsync(req, java.net.http.HttpResponse.BodyHandlers.ofInputStream());
             asyncResponse.whenCompleteAsync((response, t) -> {
                 if (t != null) future.error(t);
-                else future.complete(new HttpResponse(new FiguraInputStream(response.body()),
+                else future.complete(new HttpResponse(new FiguraInputStream(parent.parent.owner, response.body()),
                         response.statusCode(), response.headers().map()));
             });
             return future;

@@ -37,6 +37,8 @@ import org.figuramc.figura.lua.FiguraLuaPrinter;
 import org.figuramc.figura.lua.FiguraLuaRuntime;
 import org.figuramc.figura.lua.api.TextureAPI;
 import org.figuramc.figura.lua.api.data.FiguraBuffer;
+import org.figuramc.figura.lua.api.data.FiguraInputStream;
+import org.figuramc.figura.lua.api.data.FiguraOutputStream;
 import org.figuramc.figura.lua.api.entity.EntityAPI;
 import org.figuramc.figura.lua.api.particle.ParticleAPI;
 import org.figuramc.figura.lua.api.ping.PingArg;
@@ -73,6 +75,7 @@ import org.luaj.vm2.Varargs;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -109,6 +112,9 @@ public class Avatar {
     // Runtime data
     private final Queue<Runnable> events = new ConcurrentLinkedQueue<>();
     public final ArrayList<FiguraBuffer> openBuffers = new ArrayList<>();
+    public final ArrayList<FiguraInputStream> openInputStreams = new ArrayList<>();
+    public final ArrayList<FiguraOutputStream> openOutputStreams = new ArrayList<>();
+
     public AvatarRenderer renderer;
     public FiguraLuaRuntime luaRuntime;
     public EntityRenderMode renderMode = EntityRenderMode.OTHER;
@@ -950,6 +956,7 @@ public class Avatar {
         clearSounds();
         clearParticles();
         closeBuffers();
+        closeStreams();
 
         events.clear();
     }
@@ -972,6 +979,26 @@ public class Avatar {
             }
         }
         openBuffers.clear();
+    }
+
+    public void closeStreams() {
+        for (FiguraInputStream stream :
+                new ArrayList<>(openInputStreams)) {
+            try {
+                stream.close();
+            } catch (IOException ignored) {
+            }
+        }
+        openInputStreams.clear();
+
+        for (FiguraOutputStream stream :
+                new ArrayList<>(openOutputStreams)) {
+            try {
+                stream.close();
+            } catch (IOException ignored) {
+            }
+        }
+        openOutputStreams.clear();
     }
 
     public void clearParticles() {

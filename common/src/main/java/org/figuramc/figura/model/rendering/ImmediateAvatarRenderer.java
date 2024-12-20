@@ -118,7 +118,7 @@ public class ImmediateAvatarRenderer extends AvatarRenderer {
         int[] remainingComplexity = new int[] {prev};
 
         // render all model parts
-        if (root.customization.visible == null || root.customization.visible) {
+        if (root.customization.visible) {
             if (currentFilterScheme.parentType.isSeparate) {
                 List<FiguraModelPart> parts = separatedParts.get(currentFilterScheme.parentType);
                 if (parts != null) {
@@ -208,7 +208,7 @@ public class ImmediateAvatarRenderer extends AvatarRenderer {
         // test the current filter scheme
         FiguraMod.pushProfiler("predicate");
         Boolean thisPassedPredicate = currentFilterScheme.test(part.parentType, prevPredicate);
-        if (thisPassedPredicate == null || (custom.visible != null && !custom.visible)) {
+        if (thisPassedPredicate == null || (!custom.visible)) {
             if (part.parentType.isRenderLayer)
                 part.savedCustomization = customizationStack.peek();
             FiguraMod.popProfiler(2);
@@ -285,7 +285,6 @@ public class ImmediateAvatarRenderer extends AvatarRenderer {
                 int block = l.getBrightness(LightLayer.BLOCK, pos.asBlockPos());
                 int sky = l.getBrightness(LightLayer.SKY, pos.asBlockPos());
                 customizationStack.peek().light = LightTexture.pack(block, sky);
-                pivotOffsetter.light = customizationStack.peek().light;
             }
 
             if (custom.alpha != null)
@@ -387,7 +386,7 @@ public class ImmediateAvatarRenderer extends AvatarRenderer {
 
     protected void renderPivot(FiguraModelPart part, PartCustomization customization) {
         boolean group = part.customization.partType == PartCustomization.PartType.GROUP;
-        FiguraVec3 color = group ? ColorUtils.Colors.BLUE.vec : ColorUtils.Colors.AWESOME_BLUE.vec;
+        FiguraVec3 color = group ? ColorUtils.Colors.FIGURA_BLUE.vec : ColorUtils.Colors.AWESOME_BLUE.vec;
         double boxSize = group ? 1 / 16d : 1 / 32d;
         boxSize /= Math.max(Math.cbrt(part.savedPartToWorldMat.det()), 0.02);
 

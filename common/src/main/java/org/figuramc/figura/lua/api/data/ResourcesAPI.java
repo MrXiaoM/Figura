@@ -37,7 +37,7 @@ public class ResourcesAPI {
         try {
             if (parent.resources.containsKey(path)) {
                 ByteArrayInputStream bais = new ByteArrayInputStream(parent.resources.get(path));
-                return new FiguraInputStream(new GZIPInputStream(bais));
+                return new FiguraInputStream(parent, new GZIPInputStream(bais));
             }
         } catch (IOException e) {
             throw new LuaError(e);

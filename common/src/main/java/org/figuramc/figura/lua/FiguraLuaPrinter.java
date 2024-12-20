@@ -348,7 +348,7 @@ public class FiguraLuaPrinter {
         if (value.istable())
             return ColorUtils.Colors.AWESOME_BLUE.style;
         else if (!(value instanceof LuaString) && value.isnumber())
-            return ColorUtils.Colors.BLUE.style;
+            return ColorUtils.Colors.FIGURA_BLUE.style;
         else if (value.isnil())
             return ColorUtils.Colors.LUA_ERROR.style;
         else if (value.isboolean())
