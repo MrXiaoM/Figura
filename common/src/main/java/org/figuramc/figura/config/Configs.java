@@ -18,7 +18,12 @@ import org.figuramc.figura.permissions.Permissions;
 import org.figuramc.figura.resources.FiguraRuntimeResources;
 import org.figuramc.figura.utils.ColorUtils;
 import org.figuramc.figura.utils.FiguraText;
+import org.figuramc.figura.utils.PlatformUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -274,14 +279,34 @@ public class Configs {
             EntryPointManager.reinit();
         }
     };
-    public static final ConfigType.IPConfig
-            SERVER_IP = new ConfigType.IPConfig("server_ip", DEV, "figura.moonlight-devs.org") {
-        @Override
-        public void onChange() {
-            super.onChange();
-            NetworkStuff.reAuth();
+    public static final ConfigType.IPConfig SERVER_IP;
+    static {
+        String defaultIp = "figura.moonlight-devs.org";
+        try (InputStream in = PlatformUtils.loadFileFromRoot("default_server.txt");
+             InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+            char[] buffer = new char[1024];
+            StringBuilder sb = new StringBuilder();
+            int len;
+            while ((len = reader.read(buffer)) != -1) {
+                sb.append(buffer, 0, len);
+            }
+            String[] split = sb.toString().split("\n");
+            for (String s : split) {
+                String trim = s.trim();
+                if (trim.isEmpty()) continue;
+                defaultIp = trim;
+                break;
+            }
+        } catch (IOException ignored) {
         }
-    };
+        SERVER_IP = new ConfigType.IPConfig("server_ip", DEV, defaultIp) {
+            @Override
+            public void onChange() {
+                super.onChange();
+                NetworkStuff.reAuth();
+            }
+        };
+    }
     @SuppressWarnings("unused")
     public static final ConfigType.ButtonConfig
             CLEAR_CACHE = new ConfigType.ButtonConfig("clear_cache", DEV, () -> {
