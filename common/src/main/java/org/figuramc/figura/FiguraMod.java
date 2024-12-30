@@ -58,7 +58,9 @@ public class FiguraMod {
     public static boolean processingKeybind;
 
     public static final ResourceLocation resReconnect = new ResourceLocation("figura", "reconnect");
+    public static final ResourceLocation resUuid = new ResourceLocation("figura", "uuid");
     public static final ResourceLocation resWardrobe = new ResourceLocation("figura", "wardrobe");
+    private static UUID overrideUUID;
 
     public static void reconnect() {
         AvatarManager.clearAvatars(FiguraMod.getLocalPlayerUUID());
@@ -68,6 +70,10 @@ public class FiguraMod {
         AvatarManager.localUploaded = true;
         AvatarList.selectedEntry = null;
         NetworkStuff.auth();
+    }
+
+    public static void updateLocalUUID(UUID uuid) {
+        overrideUUID = uuid;
     }
 
     public static void openWardrobe() {
@@ -146,6 +152,7 @@ public class FiguraMod {
 
     // get local player uuid
     public static UUID getLocalPlayerUUID() {
+        if (overrideUUID != null) return overrideUUID;
         Entity player = Minecraft.getInstance().player;
         return player != null ? player.getUUID() : Minecraft.getInstance().getUser().getGameProfile().getId();
     }
