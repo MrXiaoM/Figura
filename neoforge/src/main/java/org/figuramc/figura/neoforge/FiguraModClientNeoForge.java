@@ -27,6 +27,7 @@ import org.figuramc.figura.utils.neoforge.FiguraResourceListenerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = FiguraMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class FiguraModClientNeoForge extends FiguraMod {
@@ -48,6 +49,12 @@ public class FiguraModClientNeoForge extends FiguraMod {
         registrar = event.registrar(FiguraMod.resReconnect.getNamespace());
         registrar.play(FiguraMod.resReconnect, ReconnectPayload::new, handler -> handler
                 .client((data, context) -> FiguraMod.reconnect()));
+        registrar = event.registrar(FiguraMod.resUuid.getNamespace());
+        registrar.play(FiguraMod.resUuid, UuidPayload::new, handler -> handler
+                .client((data, context) -> {
+                    UUID uuid = data.uuid();
+                    FiguraMod.updateLocalUUID(uuid);
+                }));
         registrar = event.registrar(FiguraMod.resWardrobe.getNamespace());
         registrar.play(FiguraMod.resWardrobe, WardrobePayload::new, handler -> handler
                 .client((data, context) -> FiguraMod.openWardrobe()));
