@@ -96,6 +96,14 @@ public class LocalAvatarLoader {
      * @param path - the file/folder for loading the avatar
      */
     public static void loadAvatar(Path path, UserData target) {
+        loadAvatar(path, target, null);
+    }
+    /**
+     * Loads an NbtCompound from the specified path
+     *
+     * @param path - the file/folder for loading the avatar
+     */
+    public static void loadAvatar(Path path, UserData target, Runnable done) {
         loadError = null;
         loadState = LoadState.UNKNOWN;
         resetWatchKeys();
@@ -105,8 +113,12 @@ public class LocalAvatarLoader {
         }
         lastLoadedPath = path;
 
-        if (path == null || target == null)
+        if (path == null || target == null) {
+            if (done != null) {
+                done.run();
+            }
             return;
+        }
 
         addWatchKey(path, KEYS::put);
 
@@ -165,6 +177,7 @@ public class LocalAvatarLoader {
                 FiguraMod.LOGGER.error("Failed to load avatar from " + finalPath, e);
                 FiguraToast.sendToast(FiguraText.of("toast.load_error"), FiguraText.of("gui.load_error." + LocalAvatarLoader.getLoadState()), FiguraToast.ToastType.ERROR);
             }
+            if (done != null) done.run();
         });
     }
     private static void loadResources(CompoundTag nbt, ListTag pathsTag, Path parentPath) {
