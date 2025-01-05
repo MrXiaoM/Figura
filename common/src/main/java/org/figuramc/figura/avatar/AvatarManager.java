@@ -264,12 +264,12 @@ public class AvatarManager {
 
         // load
         UserData user = LOADED_USERS.computeIfAbsent(id, UserData::new);
-        LocalAvatarLoader.loadAvatar(path, user);
-
-        if ("unknown".equals(LocalAvatarLoader.getLoadState()) // try load from server if not loaded
-                && LocalAvatarLoader.getLoadError() == null) {
-            fetchAvatarForLocal();
-        }
+        LocalAvatarLoader.loadAvatar(path, user, () -> {
+            if ("unknown".equals(LocalAvatarLoader.getLoadState()) // try load from server if not loaded
+                    && LocalAvatarLoader.getLoadError() == null) {
+                fetchAvatarForLocal();
+            }
+        });
 
         // mark as not uploaded
         localUploaded = false;
