@@ -22,6 +22,7 @@ public class AuthHandler {
     public static void auth(boolean reAuth) {
         NetworkStuff.async(() -> {
             if (!reAuth && NetworkStuff.isConnected()) {
+                NetworkStuff.setLimits();
                 AvatarManager.fetchAvatarForLocal();
                 return;
             }
