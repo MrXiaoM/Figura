@@ -75,7 +75,9 @@ public class FiguraMod {
     public static void openWardrobe() {
         Minecraft client = Minecraft.getInstance();
         if (client.level == null) return;
-        client.setScreen(new WardrobeScreen(client.screen));
+        client.execute(() -> {
+            client.setScreen(new WardrobeScreen(client.screen));
+        });
     }
 
     /* For some reason, the mod menu entrypoint (or something) is able to call this before the Config
