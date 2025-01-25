@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -17,6 +18,8 @@ import org.figuramc.figura.compat.SimpleVCCompat;
 import org.figuramc.figura.config.Configs;
 import org.figuramc.figura.entries.EntryPointManager;
 import org.figuramc.figura.font.Emojis;
+import org.figuramc.figura.gui.screens.WardrobeScreen;
+import org.figuramc.figura.gui.widgets.lists.AvatarList;
 import org.figuramc.figura.lua.FiguraLuaPrinter;
 import org.figuramc.figura.lua.docs.FiguraDocsManager;
 import org.figuramc.figura.mixin.SkullBlockEntityAccessor;
@@ -48,6 +51,33 @@ public class FiguraMod {
     public static Component splashText;
     public static boolean parseMessages = true;
     public static boolean processingKeybind;
+
+    public static final ResourceLocation resReconnect = new ResourceLocation("figura", "reconnect");
+    public static final ResourceLocation resUuid = new ResourceLocation("figura", "uuid");
+    public static final ResourceLocation resWardrobe = new ResourceLocation("figura", "wardrobe");
+    private static UUID overrideUUID;
+
+    public static void reconnect() {
+        AvatarManager.clearAvatars(FiguraMod.getLocalPlayerUUID());
+        try {
+            LocalAvatarLoader.loadAvatar(null, null);
+        } catch (Exception ignored) {}
+        AvatarManager.localUploaded = true;
+        AvatarList.selectedEntry = null;
+        NetworkStuff.auth();
+    }
+
+    public static void updateLocalUUID(UUID uuid) {
+        overrideUUID = uuid;
+    }
+
+    public static void openWardrobe() {
+        Minecraft client = Minecraft.getInstance();
+        if (client.level == null) return;
+        client.execute(() -> {
+            client.setScreen(new WardrobeScreen(client.screen));
+        });
+    }
 
     /* For some reason, the mod menu entrypoint (or something) is able to call this before the Config
     class can initialize, meaning Configs.DEBUG_MODE can be null when this is called.... Weird */
@@ -119,6 +149,7 @@ public class FiguraMod {
 
     // get local player uuid
     public static UUID getLocalPlayerUUID() {
+        if (overrideUUID != null) return overrideUUID;
         Entity player = Minecraft.getInstance().player;
         return player != null ? player.getUUID() : Minecraft.getInstance().getUser().getProfileId();
     }

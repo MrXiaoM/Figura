@@ -13,4 +13,4 @@ include("fabric")
 include("forge")
 include("neoforge")
 
-rootProject.name = "Figura"
+rootProject.name = "FiguraLambda"

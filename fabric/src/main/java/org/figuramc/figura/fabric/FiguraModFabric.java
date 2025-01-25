@@ -1,13 +1,15 @@
 package org.figuramc.figura.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.gui.font.providers.GlyphProviderType;
 import net.minecraft.server.packs.PackType;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.commands.fabric.FiguraCommandsFabric;
 import org.figuramc.figura.config.ConfigManager;
 import org.figuramc.figura.utils.fabric.FiguraResourceListenerImpl;
+
+import java.util.UUID;
 
 public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
     @Override
@@ -19,5 +21,11 @@ public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
         // register reload listener
         ResourceManagerHelper managerHelper = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
         getResourceListeners().forEach(figuraResourceListener -> managerHelper.registerReloadListener((FiguraResourceListenerImpl)figuraResourceListener));
+        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resReconnect, (client, handler, buf, response) -> FiguraMod.reconnect());
+        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resWardrobe, (client, handler, buf, response) -> FiguraMod.openWardrobe());
+        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resUuid, (client, handler, buf, response) -> {
+            UUID uuid = buf.readUUID();
+            FiguraMod.updateLocalUUID(uuid);
+        });
     }
 }
