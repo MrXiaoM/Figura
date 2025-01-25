@@ -7,6 +7,8 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -23,6 +25,7 @@ import org.figuramc.figura.utils.FiguraClientCommandSource;
 import org.figuramc.figura.utils.FiguraResourceListener;
 import org.figuramc.figura.utils.FiguraText;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -120,7 +123,13 @@ public class AvatarManager {
         FiguraMod.popProfiler(2);
     }
 
-    // -- avatar getters -- // 
+    // -- avatar getters -- //
+
+    public static Avatar fetchAvatarForLocal() {
+        UUID id = FiguraMod.getLocalPlayerUUID();
+        clearAvatars(id);
+        return getAvatarForPlayer(id);
+    }
 
     // player will also attempt to load from network, if possible
     public static Avatar getAvatarForPlayer(UUID player) {
@@ -225,6 +234,26 @@ public class AvatarManager {
             clearAvatars(id);
     }
 
+    public static void loadMoonAvatar(Path path) {
+        UUID id = FiguraMod.getLocalPlayerUUID();
+
+        // clear
+        clearAvatars(id);
+        FETCHED_USERS.add(id);
+
+        // load
+        UserData user = LOADED_USERS.computeIfAbsent(id, UserData::new);
+        try {
+            CompoundTag nbt = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
+            user.loadAvatar(nbt);
+        } catch (IOException e) {
+            FiguraMod.LOGGER.warn("Exception while loading .moon", e);
+        }
+
+        // mark as not uploaded
+        localUploaded = false;
+    }
+
     // load the local player avatar
     public static void loadLocalAvatar(Path path) {
         UUID id = FiguraMod.getLocalPlayerUUID();
@@ -235,7 +264,12 @@ public class AvatarManager {
 
         // load
         UserData user = LOADED_USERS.computeIfAbsent(id, UserData::new);
-        LocalAvatarLoader.loadAvatar(path, user);
+        LocalAvatarLoader.loadAvatar(path, user, () -> {
+            if ("unknown".equals(LocalAvatarLoader.getLoadState()) // try load from server if not loaded
+                    && LocalAvatarLoader.getLoadError() == null) {
+                fetchAvatarForLocal();
+            }
+        });
 
         // mark as not uploaded
         localUploaded = false;
@@ -267,7 +301,8 @@ public class AvatarManager {
 
         FETCHED_USERS.add(id);
 
-        if (EntityUtils.checkInvalidPlayer(id)) {
+        UUID local = FiguraMod.getLocalPlayerUUID();
+        if (EntityUtils.checkInvalidPlayer(id) && !local.equals(id)) {
             FiguraMod.debug("Voiding userdata for " + id);
             return;
         }
