@@ -7,15 +7,13 @@ import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -23,11 +21,16 @@ import org.figuramc.figura.config.ConfigManager;
 import org.figuramc.figura.config.neoforge.ModConfig;
 import org.figuramc.figura.gui.neoforge.GuiOverlay;
 import org.figuramc.figura.gui.neoforge.GuiUnderlay;
+import org.figuramc.figura.payload.ReconnectPayload;
+import org.figuramc.figura.payload.UuidPayload;
+import org.figuramc.figura.payload.WardrobePayload;
 import org.figuramc.figura.utils.neoforge.FiguraResourceListenerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static org.figuramc.figura.payload.Decoder.decoder;
 
 @EventBusSubscriber(modid = FiguraMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class FiguraModClientNeoForge extends FiguraMod {
@@ -41,20 +44,17 @@ public class FiguraModClientNeoForge extends FiguraMod {
     }
 
     @SubscribeEvent
-    public static void register(final RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar registrar;
+    public static void register(final RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar;
         registrar = event.registrar(FiguraMod.resReconnect.getNamespace());
-        registrar.play(FiguraMod.resReconnect, ReconnectPayload::new, handler -> handler
-                .client((data, context) -> FiguraMod.reconnect()));
+        registrar.playToClient(ReconnectPayload.TYPE, decoder(ReconnectPayload::new),
+                (data, context) -> FiguraMod.reconnect());
         registrar = event.registrar(FiguraMod.resUuid.getNamespace());
-        registrar.play(FiguraMod.resUuid, UuidPayload::new, handler -> handler
-                .client((data, context) -> {
-                    UUID uuid = data.uuid();
-                    FiguraMod.updateLocalUUID(uuid);
-                }));
+        registrar.playToClient(UuidPayload.TYPE, decoder(UuidPayload::new),
+                (data, context) -> FiguraMod.updateLocalUUID(data.uuid()));
         registrar = event.registrar(FiguraMod.resWardrobe.getNamespace());
-        registrar.play(FiguraMod.resWardrobe, WardrobePayload::new, handler -> handler
-                .client((data, context) -> FiguraMod.openWardrobe()));
+        registrar.playToClient(WardrobePayload.TYPE, decoder(WardrobePayload::new),
+                (data, context) -> FiguraMod.openWardrobe());
     }
 
     @SubscribeEvent
