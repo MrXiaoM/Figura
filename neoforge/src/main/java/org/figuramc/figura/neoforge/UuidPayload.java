@@ -18,6 +18,6 @@ public record UuidPayload(UUID uuid) implements CustomPacketPayload {
 
     @Override
     public @NotNull ResourceLocation id() {
-        return FiguraModClientNeoForge.resReconnect;
+        return FiguraModClientNeoForge.resUuid;
     }
 }
