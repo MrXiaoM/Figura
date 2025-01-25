@@ -27,6 +27,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
 import java.util.Locale;
 import java.util.Map;
@@ -41,15 +44,14 @@ public class ChatComponentMixin {
     @Unique private Integer color;
     @Unique private int currColor;
 
-    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At("HEAD"), cancellable = true)
-    private void cancelMessage(Component message, MessageSignature signature, GuiMessageTag tag, CallbackInfo ci) {
-        if (modifyMessage(message) == null)
+    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    private void injectAddMessage(Component message, MessageSignature signature, GuiMessageTag tag, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Component> localMessageRef) {
+        Component modifiedMessage = modifyMessage(message);
+        if (modifiedMessage == null) {
             ci.cancel();
-    }
-
-    @ModifyVariable(argsOnly = true, method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At("HEAD"), index = 1)
-    private Component modifyQueue(Component message) {
-        return modifyMessage(message); // If it's null, it's already cancelled.
+            return;
+        }
+        localMessageRef.set(modifiedMessage);
     }
 
     private Component modifyMessage(Component message) {

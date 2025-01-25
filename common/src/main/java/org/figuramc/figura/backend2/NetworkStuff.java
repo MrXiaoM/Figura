@@ -76,6 +76,8 @@ public class NetworkStuff {
 
     public static Version latestVersion;
 
+    private static boolean uploadPermission = false;
+
     //limits
     private static final RefilledNumber
             uploadRate = new RefilledNumber(),
@@ -160,8 +162,8 @@ public class NetworkStuff {
     }
 
     private static boolean checkUUID(UUID id) {
-        if (id.version() != 4) {
-            FiguraMod.debug("Voiding request for non v4 UUID \"" + id + "\" (v" + id.version() + ")");
+        if (id.version() < 3) {
+            FiguraMod.debug("Voiding request for non v3 UUID \"" + id + "\" (v" + id.version() + ")");
             return true;
         }
         return false;
@@ -205,6 +207,7 @@ public class NetworkStuff {
         backendStatus = 2;
         connectAPI(token);
         connectWS(token);
+
     }
 
     private static void fetchMOTD() {
@@ -245,6 +248,7 @@ public class NetworkStuff {
         api = new HttpAPI(token);
         checkVersion();
         setLimits();
+        AvatarManager.fetchAvatarForLocal();
     }
 
     private static void disconnectAPI() {
@@ -290,6 +294,8 @@ public class NetworkStuff {
 
             JsonObject limits = json.getAsJsonObject("limits");
             maxAvatarSize = limits.get("maxAvatarSize").getAsInt();
+            JsonElement canUpload = limits.get("canUpload"); // default false
+            uploadPermission = canUpload != null && canUpload.getAsBoolean();
         });
     }
 
@@ -537,7 +543,7 @@ public class NetworkStuff {
     }
 
     public static boolean canUpload() {
-        return isConnected() && uploadRate.check();
+        return isConnected() && uploadPermission && uploadRate.check();
     }
 
     public static int getSizeLimit() {
