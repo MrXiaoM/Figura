@@ -7,9 +7,10 @@ import net.minecraft.server.packs.PackType;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.commands.fabric.FiguraCommandsFabric;
 import org.figuramc.figura.config.ConfigManager;
+import org.figuramc.figura.payload.ReconnectPayload;
+import org.figuramc.figura.payload.UuidPayload;
+import org.figuramc.figura.payload.WardrobePayload;
 import org.figuramc.figura.utils.fabric.FiguraResourceListenerImpl;
-
-import java.util.UUID;
 
 public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
     @Override
@@ -21,11 +22,8 @@ public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
         // register reload listener
         ResourceManagerHelper managerHelper = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
         getResourceListeners().forEach(figuraResourceListener -> managerHelper.registerReloadListener((FiguraResourceListenerImpl)figuraResourceListener));
-        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resReconnect, (client, handler, buf, response) -> FiguraMod.reconnect());
-        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resWardrobe, (client, handler, buf, response) -> FiguraMod.openWardrobe());
-        ClientPlayNetworking.registerGlobalReceiver(FiguraMod.resUuid, (client, handler, buf, response) -> {
-            UUID uuid = buf.readUUID();
-            FiguraMod.updateLocalUUID(uuid);
-        });
+        ClientPlayNetworking.registerGlobalReceiver(ReconnectPayload.TYPE, (data, handler) -> FiguraMod.reconnect());
+        ClientPlayNetworking.registerGlobalReceiver(WardrobePayload.TYPE, (data, handler) -> FiguraMod.openWardrobe());
+        ClientPlayNetworking.registerGlobalReceiver(UuidPayload.TYPE, (data, handler) -> FiguraMod.updateLocalUUID(data.uuid()));
     }
 }
