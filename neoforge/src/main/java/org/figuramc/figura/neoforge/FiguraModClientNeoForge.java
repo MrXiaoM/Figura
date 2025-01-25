@@ -34,6 +34,8 @@ import static org.figuramc.figura.payload.Decoder.decoder;
 
 import static org.figuramc.figura.payload.Decoder.decoder;
 
+import static org.figuramc.figura.payload.Decoder.decoder;
+
 @EventBusSubscriber(modid = FiguraMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class FiguraModClientNeoForge extends FiguraMod {
     // keybinds stored here
