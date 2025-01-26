@@ -34,7 +34,7 @@ class LoadCommand {
             } else {
                 AvatarManager.loadLocalAvatar(p);
             }
-            context.getSource().figura$sendFeedback(FiguraText.of("command.load.loading"));
+            context.getSource().figura$sendFeedback(new FiguraText("command.load.loading"));
             return 1;
         } catch (Exception e) {
             context.getSource().figura$sendError(new FiguraText("command.load.invalid", str));
