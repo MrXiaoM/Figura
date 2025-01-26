@@ -13,7 +13,7 @@ import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkRegistry;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -63,16 +63,16 @@ public class FiguraModClientForge extends FiguraMod {
         vanillaOverlays.add(ForgeIngameGui.CHAT_PANEL_ELEMENT);
         vanillaOverlays.add(ForgeIngameGui.PLAYER_LIST_ELEMENT);
         
-        ChannelBuilder.named(FiguraMod.resReconnect)
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resReconnect)
                 .eventNetworkChannel()
                 .addListener(e -> FiguraMod.reconnect());
-        ChannelBuilder.named(FiguraMod.resUuid)
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resUuid)
                 .eventNetworkChannel()
                 .addListener(e -> {
                     UUID uuid = e.getPayload().readUUID();
                     FiguraMod.updateLocalUUID(uuid);
                 });
-        ChannelBuilder.named(FiguraMod.resWardrobe)
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resWardrobe)
                 .eventNetworkChannel()
                 .addListener(e -> FiguraMod.openWardrobe());
     }
