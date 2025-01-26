@@ -28,11 +28,6 @@ import org.figuramc.figura.utils.neoforge.FiguraResourceListenerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import static org.figuramc.figura.payload.Decoder.decoder;
-
-import static org.figuramc.figura.payload.Decoder.decoder;
 
 import static org.figuramc.figura.payload.Decoder.decoder;
 
