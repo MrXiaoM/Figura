@@ -1,6 +1,5 @@
 package org.figuramc.figura.forge;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -8,21 +7,17 @@ import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.fml.network.NetworkRegistry;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
 import org.figuramc.figura.backend2.NetworkStuff;
 import org.figuramc.figura.config.ConfigManager;
 import org.figuramc.figura.config.forge.ModConfig;
-import org.figuramc.figura.gui.FiguraGui;
-import org.figuramc.figura.utils.forge.FiguraResourceListenerImpl;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
