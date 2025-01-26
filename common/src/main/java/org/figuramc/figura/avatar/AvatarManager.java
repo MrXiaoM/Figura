@@ -244,7 +244,7 @@ public class AvatarManager {
         // load
         UserData user = LOADED_USERS.computeIfAbsent(id, UserData::new);
         try {
-            CompoundTag nbt = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
+            CompoundTag nbt = NbtIo.readCompressed(path.toFile());
             user.loadAvatar(nbt);
         } catch (IOException e) {
             FiguraMod.LOGGER.warn("Exception while loading .moon", e);
