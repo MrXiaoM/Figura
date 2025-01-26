@@ -8,13 +8,12 @@ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkRegistry;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -40,16 +39,16 @@ public class FiguraModClientForge extends FiguraMod {
         for (VanillaGuiOverlay overlay : VanillaGuiOverlay.values()) {
             vanillaOverlays.add(overlay.type());
         }
-        ChannelBuilder.named(FiguraMod.resReconnect)
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resReconnect)
                 .eventNetworkChannel()
                 .addListener(e -> FiguraMod.reconnect());
-        ChannelBuilder.named(FiguraMod.resUuid)
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resUuid)
                 .eventNetworkChannel()
                 .addListener(e -> {
                     UUID uuid = e.getPayload().readUUID();
                     FiguraMod.updateLocalUUID(uuid);
                 });
-        ChannelBuilder.named(FiguraMod.resWardrobe)
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resWardrobe)
                 .eventNetworkChannel()
                 .addListener(e -> FiguraMod.openWardrobe());
     }
