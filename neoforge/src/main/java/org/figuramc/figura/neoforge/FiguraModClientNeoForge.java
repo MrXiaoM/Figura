@@ -14,8 +14,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
 import net.neoforged.neoforge.client.gui.overlay.NamedGuiOverlay;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.NetworkRegistry;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.avatar.Avatar;
 import org.figuramc.figura.avatar.AvatarManager;
@@ -41,23 +40,18 @@ public class FiguraModClientNeoForge extends FiguraMod {
         for (VanillaGuiOverlay overlay : VanillaGuiOverlay.values()) {
             vanillaOverlays.add(overlay.type());
         }
-    }
-
-    @SubscribeEvent
-    public static void register(final RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar registrar;
-        registrar = event.registrar(FiguraMod.resReconnect.getNamespace());
-        registrar.play(FiguraMod.resReconnect, ReconnectPayload::new, handler -> handler
-                .client((data, context) -> FiguraMod.reconnect()));
-        registrar = event.registrar(FiguraMod.resUuid.getNamespace());
-        registrar.play(FiguraMod.resUuid, UuidPayload::new, handler -> handler
-                .client((data, context) -> {
-                    UUID uuid = data.uuid();
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resReconnect)
+                .eventNetworkChannel()
+                .addListener(e -> FiguraMod.reconnect());
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resUuid)
+                .eventNetworkChannel()
+                .addListener(e -> {
+                    UUID uuid = e.getPayload().readUUID();
                     FiguraMod.updateLocalUUID(uuid);
-                }));
-        registrar = event.registrar(FiguraMod.resWardrobe.getNamespace());
-        registrar.play(FiguraMod.resWardrobe, WardrobePayload::new, handler -> handler
-                .client((data, context) -> FiguraMod.openWardrobe()));
+                });
+        NetworkRegistry.ChannelBuilder.named(FiguraMod.resWardrobe)
+                .eventNetworkChannel()
+                .addListener(e -> FiguraMod.openWardrobe());
     }
 
     @SubscribeEvent
