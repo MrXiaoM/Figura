@@ -45,13 +45,13 @@ public class FiguraModClientNeoForge extends FiguraMod {
     @SubscribeEvent
     public static void register(final RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar;
-        registrar = event.registrar(FiguraMod.resReconnect.getNamespace());
+        registrar = event.registrar(FiguraMod.resReconnect.getNamespace()).optional();
         registrar.playToClient(ReconnectPayload.TYPE, decoder(ReconnectPayload::new),
                 (data, context) -> FiguraMod.reconnect());
-        registrar = event.registrar(FiguraMod.resUuid.getNamespace());
+        registrar = event.registrar(FiguraMod.resUuid.getNamespace()).optional();
         registrar.playToClient(UuidPayload.TYPE, decoder(UuidPayload::new),
                 (data, context) -> FiguraMod.updateLocalUUID(data.uuid()));
-        registrar = event.registrar(FiguraMod.resWardrobe.getNamespace());
+        registrar = event.registrar(FiguraMod.resWardrobe.getNamespace()).optional();
         registrar.playToClient(WardrobePayload.TYPE, decoder(WardrobePayload::new),
                 (data, context) -> FiguraMod.openWardrobe());
     }
