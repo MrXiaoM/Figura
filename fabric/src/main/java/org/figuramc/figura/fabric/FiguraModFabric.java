@@ -2,7 +2,11 @@ package org.figuramc.figura.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.packs.PackType;
 import org.figuramc.figura.FiguraMod;
 import org.figuramc.figura.commands.fabric.FiguraCommandsFabric;
@@ -11,6 +15,10 @@ import org.figuramc.figura.payload.ReconnectPayload;
 import org.figuramc.figura.payload.UuidPayload;
 import org.figuramc.figura.payload.WardrobePayload;
 import org.figuramc.figura.utils.fabric.FiguraResourceListenerImpl;
+
+import java.util.function.Function;
+
+import static org.figuramc.figura.payload.Decoder.decoder;
 
 public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
     @Override
@@ -22,8 +30,18 @@ public class FiguraModFabric extends FiguraMod implements ClientModInitializer {
         // register reload listener
         ResourceManagerHelper managerHelper = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES);
         getResourceListeners().forEach(figuraResourceListener -> managerHelper.registerReloadListener((FiguraResourceListenerImpl)figuraResourceListener));
-        ClientPlayNetworking.registerGlobalReceiver(ReconnectPayload.TYPE, (data, handler) -> FiguraMod.reconnect());
-        ClientPlayNetworking.registerGlobalReceiver(WardrobePayload.TYPE, (data, handler) -> FiguraMod.openWardrobe());
-        ClientPlayNetworking.registerGlobalReceiver(UuidPayload.TYPE, (data, handler) -> FiguraMod.updateLocalUUID(data.uuid()));
+        registerCustomPayload(ReconnectPayload.TYPE, ReconnectPayload::new,
+                (data, handler) -> FiguraMod.reconnect());
+        registerCustomPayload(WardrobePayload.TYPE, WardrobePayload::new,
+                (data, handler) -> FiguraMod.openWardrobe());
+        registerCustomPayload(UuidPayload.TYPE, UuidPayload::new,
+                (data, handler) -> FiguraMod.updateLocalUUID(data.uuid()));
+    }
+
+    private <T extends CustomPacketPayload> void registerCustomPayload(
+            CustomPacketPayload.Type<T> type, Function<RegistryFriendlyByteBuf, T> decoder, ClientPlayNetworking. PlayPayloadHandler<T> handler
+    ) {
+        PayloadTypeRegistry.playS2C().register(type, decoder(decoder));
+        ClientPlayNetworking.registerGlobalReceiver(type, handler);
     }
 }
