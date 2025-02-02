@@ -1,6 +1,7 @@
 package org.figuramc.figura.forge;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -32,7 +33,11 @@ public class FiguraModClientForge extends FiguraMod {
         ChannelBuilder.named(FiguraMod.resUuid)
                 .eventNetworkChannel()
                 .addListener(e -> {
-                    UUID uuid = e.getPayload().readUUID();
+                    FriendlyByteBuf payload = e.getPayload();
+                    payload.resetReaderIndex();
+                    long most = payload.readLong();
+                    long least = payload.readLong();
+                    UUID uuid = new UUID(most, least);
                     FiguraMod.updateLocalUUID(uuid);
                 });
         ChannelBuilder.named(FiguraMod.resWardrobe)
